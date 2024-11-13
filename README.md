@@ -1,3 +1,4 @@
+![Logo Università](https://www.unibg.it/themes/custom/unibg/logo.svg) 
 # COVID-19 Clinical Studies Database Project
 
 ## Overview
