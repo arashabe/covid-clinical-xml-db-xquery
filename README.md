@@ -43,7 +43,7 @@ The main objectives of the project are:
 
 The repository is organized as follows:
 
-- **`/scripts/`**: Includes SQL scripts used to create tables, load XML data into SQL Server, and implement triggers.
+- **`/scripts/`**: Includes scripts used to create tables, load XML data into SQL Server, and implement triggers.
 - **`/queries/`**: Contains XQuery scripts for extracting and manipulating XML data within SQL Server.
 - **`/docs/`**: Documentation on the project setup, including installation instructions and database schema.
 
