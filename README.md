@@ -25,7 +25,7 @@ The main objectives of the project are:
    - Load over 5000 XML files into a SQL Server database, storing them in an XML column within a table called `ClinicalStudies`.
 
 2. **Relational Database Design**:
-   - Design relational tables to store key information about each study, including tables for `Study`, `Sponsors`, `Conditions`, and `Locations`.
+   - Design relational tables to store key information about each study, including tables for `Studies`, `Sponsors`, `Conditions`, and `Locations`.
    - Use **XQuery** to extract and insert relevant data from the XML into the relational tables.
 
 3. **Implementation of Triggers**:
@@ -43,7 +43,6 @@ The main objectives of the project are:
 
 The repository is organized as follows:
 
-- **`/data/`**: Contains the original XML files representing the clinical studies.
 - **`/scripts/`**: Includes SQL scripts used to create tables, load XML data into SQL Server, and implement triggers.
 - **`/queries/`**: Contains XQuery scripts for extracting and manipulating XML data within SQL Server.
 - **`/docs/`**: Documentation on the project setup, including installation instructions and database schema.
