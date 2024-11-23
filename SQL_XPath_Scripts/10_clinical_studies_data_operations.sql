@@ -1,3 +1,4 @@
+-- Switch to the new database
 USE DB2_covid_studies;
 GO
 --Verify the data load:
