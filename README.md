@@ -39,35 +39,37 @@ The main objectives of the project are:
 5. **Automation and Reporting**:
    - Create a system that updates the clinical study information automatically and allows flexible querying for specific study details, statuses, or results.
 
+
 ## Project Structure
 
 The repository is organized as follows:
 
-- **`/scripts/`**: Includes scripts used to create tables, load XML data into SQL Server, and implement triggers.
-- **`/queries/`**: Contains XQuery scripts for extracting and manipulating XML data within SQL Server.
-- **`/docs/`**: Documentation on the project setup, including installation instructions and database schema.
+- **/Doc/**: Contains documentation on the project.
+- **/Sample_XML_Documents/**: Includes sample XML files used for testing and demonstrating the project's XML handling capabilities.
+- **/SQL_XPath_Scripts/**: Contains SQL scripts for creating tables, loading XML data into SQL Server, implementing triggers, stored procedures and using XPath.
+- **/XQuery_Scripts/**: Houses XQuery scripts for extracting and manipulating XML data.
+
 
 ## Installation
 
 To run the project:
 
-1. Ensure **SQL Server Management Studio (SSMS)** is installed and running.
+1. Ensure **SQL Server Management Studio (SSMS)** and **BaseX** are installed and running.
 2. Clone the repository to your local machine.
-3. Run the SQL scripts in the `/scripts/` folder to set up the database and tables.
-4. Place the XML dataset in the appropriate directory.
-5. Execute the queries in `/queries/` to interact with the database and automate data manipulation.
+3. Before executing the scripts in the **SQL_XPath_Scripts** folder and **XQuery_Scripts**, please read the relevant documentation located in the Doc folder.
 
 ## Technologies Used
 
 - **SQL Server**: Relational database management system used for data storage and manipulation.
+- **BaseX**: Native XML database for efficient storage, querying, and processing of XML data.
 - **XQuery**: Query language used to extract and manipulate XML data.
 - **Triggers**: Used to automate actions based on events within the database.
+- **Stored Procedures**: Precompiled SQL code that can be executed on demand for performing complex database operations.
 
-## Future Enhancements
+## Documentation Indices
+- [**SQL Scripts**](https://github.com/arashabe/covid-clinical-xml-db-xquery/blob/main/Doc/Problem_and_Solution_SQL_XPath_Data_Workflow.md)
+- [**XQuery Scripts**]
 
-- Integration with external systems for real-time updates on clinical study progress.
-- Expanded querying capabilities, including advanced reporting and analytics on study data.
-- Implementation of more advanced **ECA** rules for complex automation.
 
 
 
