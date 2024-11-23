@@ -35,6 +35,10 @@ During the **Database 2** university course, we delved into numerous topics, inc
 The XML data is sourced from [Kaggle](https://www.kaggle.com/datasets/parulpandey/covid19-clinical-trials-dataset/data?select=COVID-19+CLinical+trials+studies). The XML files in my case are saved in the folder J:\DB2-project\COVID-19.
 This file aims to explain the problems and solutions with a comprehensive description of all the steps related to the scripts present in the **SQL_XPath_Scripts** folder in the repository.
 
+
+Prerequisite: Make sure you have **SQL Server Management Studio (SSMS)** installed to execute the steps outlined in this document.
+
+
 ---
 <h2 id="step-1" style="text-align: center;">Step 1: Load XML Files</h2>
 
