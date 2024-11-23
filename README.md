@@ -56,7 +56,7 @@ To run the project:
 
 1. Ensure **SQL Server Management Studio (SSMS)** and **BaseX** are installed and running.
 2. Clone the repository to your local machine.
-3. Before executing the scripts in the **SQL_XPath_Scripts** folder and **XQuery_Scripts**, please read the relevant documentation located in the Doc folder.
+3. Before executing the scripts in the **SQL_XPath_Scripts** folder and **XQuery_Scripts**, please **read the relevant documentation** located in the Doc folder.
 
 ## Technologies Used
 
