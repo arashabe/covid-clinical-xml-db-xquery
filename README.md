@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project was developed for the **Database 2** course at the **University of Bergamo**, Academic Year 2024/2025. The course focuses on **active databases, Event/Condition/Action (ECA) rules**, and the integration of **XML data** with relational databases. The project revolves around analyzing a COVID-19 clinical studies dataset from [Kaggle](https://www.kaggle.com/datasets/parulpandey/covid19-clinical-trials-dataset/data?select=COVID-19+CLinical+trials+studies), which contains over 5000 XML files. Each file represents a study, with details such as title, sponsor/collaborators, status, start and completion dates, and other metadata.
+This project was developed for the **Database 2** course at the **University of Bergamo**, Academic Year 2024/2025. The project focuses on **active databases, Event/Condition/Action (ECA) rules**, and the integration of **XML data** with relational databases. The project revolves around analyzing a COVID-19 clinical studies dataset from [Kaggle](https://www.kaggle.com/datasets/parulpandey/covid19-clinical-trials-dataset/data?select=COVID-19+CLinical+trials+studies), which contains over 5000 XML files. Each file represents a study, with details such as title, sponsor/collaborators, status, start and completion dates, and other metadata.
 
 The goal of this project is to design and implement a database system that leverages SQL Server, XML storage, and advanced querying techniques such as **XQuery** to automate data extraction, maintenance, and updates. This aligns with the concepts learned in the course, specifically focusing on **triggers**, **active rules**, and **XML data processing** in relational databases.
 
