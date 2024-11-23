@@ -14,7 +14,7 @@
 12. [Step 11: Automate Data Insert and Update](#step-11)
 
 
-
+---
 
 
 <h1 id="introduction" style="text-align: center;">Introduction</h1>
@@ -36,7 +36,7 @@ The XML data is sourced from [Kaggle](https://www.kaggle.com/datasets/parulpande
 This file aims to explain the problems and solutions with a comprehensive description of all the steps related to the scripts present in the **SQL_XPath_Scripts** folder in the repository.
 
 ---
-<h2 id="step-1" style="text-align: center;">Step 1</h2>
+<h2 id="step-1" style="text-align: center;">Step 1: Load XML Files</h2>
 
 **The Problem:**
 Suppose there are various clinical studies conducted by researchers and healthcare personnel in different locations. These studies are provided in XML format to a main entity. This entity, which intends to use the studies, faces a key problem: the files are in XML format, while the entity uses a relational database to store, update, analyze, and prepare the information for future research. The entity seeks a solution that allows them to load the XML documents into the database and divide the information contained in each file into various tables, such as `Studies`, `Sponsors`, `Conditions`, `Contacts`, `Locations`, etc. This way, a researcher at the entity can access the database, search for information of interest, and process it.
@@ -120,7 +120,7 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
 This solution automates the loading of over 50,000 XML files related to COVID-19 studies into the relational database, making the data easily accessible and usable for further analysis and research.
 
 ---
-<h2 id="step-2" style="text-align: center;">Step 2</h2>
+<h2 id="step-2" style="text-align: center;">Step 2: Store Clinical Study Info</h2>
 
 **The Problem:**
 The main entity needs to extract key information from the XML files and store it in a structured format within the relational database. This allows for efficient querying, updating, and analysis of the clinical study data. The challenge is to parse the relevant details from the XML format and populate a relational table with this information.
@@ -164,7 +164,7 @@ This solution allows the entity to efficiently parse and store crucial clinical 
 
 ---
 
-<h2 id="step-3" style="text-align: center;">Step 3</h2>
+<h2 id="step-3" style="text-align: center;">Step 3: Store Sponsor Info</h2>
 
 **The Problem:**
 The main entity needs to extract information about the sponsors of clinical studies from the XML files and store it in a structured format within the relational database. This allows for efficient querying and analysis of the sponsor data. The challenge is to parse the relevant details from the XML format and populate a relational table with this information.
@@ -203,7 +203,7 @@ This solution allows the entity to efficiently parse and store crucial sponsor i
 
 ---
 
-<h2 id="step-4" style="text-align: center;">Step 4</h2>
+<h2 id="step-4" style="text-align: center;">Step 4: Store Condition Info</h2>
 
 
 **The Problem:**
@@ -242,7 +242,7 @@ This solution allows the entity to efficiently parse and store crucial condition
 
 ---
 
-<h2 id="step-5" style="text-align: center;">Step 5</h2>
+<h2 id="step-5" style="text-align: center;">Step 5: Store Eligibility Info</h2>
 
 
 **The Problem:**
@@ -283,7 +283,7 @@ The `5_create_eligibility_table_from_xml` file provides an SQL script that perfo
 This solution allows the entity to efficiently parse and store crucial eligibility information from clinical studies in a relational format, making it easier to query and analyze the data.
 
 ---
-<h2 id="step-6" style="text-align: center;">Step 6</h2>
+<h2 id="step-6" style="text-align: center;">Step 6: Store Contact Info</h2>
 
 
 **The Problem:**
@@ -336,7 +336,7 @@ This solution allows the entity to efficiently parse and store crucial contact i
 
 ---
 
-<h2 id="step-7" style="text-align: center;">Step 7</h2>
+<h2 id="step-7" style="text-align: center;">Step 7: Store Location Info</h2>
 
 
 **The Problem:**
@@ -379,7 +379,7 @@ This solution allows the entity to efficiently parse and store crucial location 
 
 ---
 
-<h2 id="step-8" style="text-align: center;">Step 8</h2>
+<h2 id="step-8" style="text-align: center;">Step 8: Trigger for ClinicalStudies</h2>
 
 
 **The Problem:**
@@ -505,7 +505,7 @@ This solution ensures that any insert, update, or delete actions performed on th
 
 ---
 
-<h2 id="step-9" style="text-align: center;">Step 9</h2>
+<h2 id="step-9" style="text-align: center;">Step 9: Trigger on Studies</h2>
 
 
 **The Problem:**
@@ -631,7 +631,7 @@ This solution ensures that any insert, update, or delete actions performed on th
 
 ---
 
-<h2 id="step-10" style="text-align: center;">Step 10</h2>
+<h2 id="step-10" style="text-align: center;">Step 10: Update XML Data</h2>
 
 
 **The Problem:**
@@ -716,7 +716,7 @@ This solution provides a comprehensive set of queries to verify, extract, filter
 
 ---
 
-<h2 id="step-11" style="text-align: center;">Step 11</h2>
+<h2 id="step-11" style="text-align: center;">Step 11: Automate Data Insert and Update</h2>
 
 
 **The Problem:**
