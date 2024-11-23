@@ -738,7 +738,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
    AS
    BEGIN
        DECLARE @FilePath NVARCHAR(255);
-       DECLARE @FolderPath NVARCHAR(255) = 'J:\DB2-project\NEW_FILES\\';
+       DECLARE @FolderPath NVARCHAR(255) = 'J:\DB2-project\COVID-19\\';
        DECLARE @SQL NVARCHAR(MAX);
        DECLARE @StudyID NVARCHAR(50);
 
@@ -747,7 +747,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
 
        -- Use xp_cmdshell to get the list of files in the folder (ensure xp_cmdshell is enabled)
        INSERT INTO #Files (FileName)
-       EXEC xp_cmdshell 'dir J:\DB2-project\NEW_FILES\*.xml /b';
+       EXEC xp_cmdshell 'dir J:\DB2-project\COVID-19\*.xml /b';
 
        -- Remove any NULL values from the temporary table
        DELETE FROM #Files WHERE FileName IS NULL;
