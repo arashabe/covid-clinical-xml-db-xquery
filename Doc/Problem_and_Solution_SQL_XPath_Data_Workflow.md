@@ -12,6 +12,7 @@
 10. [Step 9: Trigger on Studies](#step-9)
 11. [Step 10: Update XML Data](#step-10)
 12. [Step 11: Automate Data Insert and Update](#step-11)
+13. [Step 12: Backup Job Configuration and Management](#step-12)
 
 
 ---
@@ -157,6 +158,12 @@ The `2_create_studies_table_from_xml` file provides an SQL script that performs 
        TRY_CAST(StudyXML.value('(//primary_completion_date)[1]', 'NVARCHAR(50)') AS DATE) AS PrimaryCompletionDate
    INTO Studies
    FROM ClinicalStudies;
+   ```
+
+    **Add the primary key to the StudyID column**: This command will define StudyID as the primary key for the Studies table, ensuring that each value in the **StudyID** column is **unique** and cannot be NULL.
+   ```sql
+   ALTER TABLE Studies 
+   ADD CONSTRAINT PK_Studies PRIMARY KEY (StudyID);
    ```
 
 4. **Verify the data load**: The script verifies the data extraction and loading process by selecting the top 10 records from the `Studies` table.
@@ -486,18 +493,17 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
 
 9. **Test the triggers**: The script includes examples of insert, update, and delete operations to test if the triggers are working correctly.
    ```sql
-   -- Insert example
-   INSERT INTO ClinicalStudies (StudyXML)
-   VALUES ('<study><title>Sample Study</title><description>Example</description></study>');
-
    -- Update example
-   UPDATE ClinicalStudies
-   SET StudyXML = '<study><title>Updated Study</title><description>Updated Example</description></study>'
-   WHERE StudyID = 5784;
+    UPDATE ClinicalStudies
+    SET StudyXML.modify('
+        replace value of (//completion_date/text())[1]
+        with "August 02, 2022"
+    ')
+    WHERE StudyID = 5783;
 
    -- Delete example
    DELETE FROM ClinicalStudies
-   WHERE StudyID = 5784;
+   WHERE StudyID = 5783;
    ```
 
 10. **View the log**: The script retrieves the entries from the `ClinicalStudies_Log` table to verify that the triggers are logging the actions correctly.
@@ -890,4 +896,131 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
 This solution automates the process of inserting and updating clinical study data from multiple XML files into the relational database. By creating and executing a stored procedure, the entity ensures that new XML files are consistently and accurately loaded into the `ClinicalStudies` table and its derived tables, maintaining data integrity and facilitating efficient data management.
 
 ---
+
+
+<h2 id="step-12" style="text-align: center;">Step 12: Backup Job Configuration and Management</h2>
+
+**The Problem:**
+To ensure the integrity and availability of the `DB2_covid_studies` database, it is essential to configure and manage regular backup jobs. This includes creating, scheduling, enabling, disabling, deleting, and verifying backup jobs. The challenge is to ensure that these operations are performed efficiently and without conflicts.
+
+**The Solution:**
+The `12_backup_job_management` file provides an SQL script that performs the following operations to address the problem:
+
+1. **Use the msdb Database:**
+   The SQL Server Agent uses the `msdb` database for scheduling and job management.
+
+   ```sql
+   USE msdb;
+   GO
+   ```
+
+2. **Create a New Job:**
+   Create a job named 'Backup Complete DB2_covid_studies' to perform the backup operation.
+
+   ```sql
+   -- Create a new job named 'Backup Complete DB2_covid_studies'
+   EXEC dbo.sp_add_job
+       @job_name = N'Backup Complete DB2_covid_studies';
+   GO
+   ```
+
+3. **Add a New Step to the Job:**
+   Add a step to the job that performs the actual backup operation.
+
+   ```sql
+   -- Add a new step to the job which performs the backup operation
+   EXEC sp_add_jobstep
+       @job_name = N'Backup Complete DB2_covid_studies',
+       @step_name = N'Execute Backup',
+       @subsystem = N'TSQL', -- the step is a T-SQL script
+       @command = N'BACKUP DATABASE [DB2_covid_studies] TO DISK = ''J:\Backups\DB2_covid_studies_'' + CONVERT(NVARCHAR, GETDATE(), 112) + ''.bak'' WITH FORMAT, MEDIANAME = ''SQLServerBackups'', NAME = ''Full Backup of DB2_covid_studies'';',
+       @retry_attempts = 0, -- Number of retry attempts if the step fails
+       @retry_interval = 1; -- Interval between retry attempts in minutes
+   GO
+   ```
+
+4. **Create a Schedule for the Job:**
+   Schedule the job to run daily at 2:00 AM.
+
+   ```sql
+   -- Create a schedule named 'Backup Daily' to run the job daily at 2 AM
+   EXEC sp_add_schedule
+       @schedule_name = N'Backup Daily',
+       @freq_type = 4,  -- 4 Specifies a daily schedule -- ex. 8 is weekly -- 16 is monthly
+       @freq_interval = 1, -- Frequency interval of 1 day
+       @active_start_time = 020000;  -- Start time in HHMMSS format -- 02:00:00 AM
+   GO
+   ```
+
+5. **Attach the Schedule to the Job:**
+   Attach the 'Backup Daily' schedule to the job.
+
+   ```sql
+   -- Attach the schedule 'Backup Daily' to the job 'Backup Complete DB2_covid_studies'
+   EXEC sp_attach_schedule
+       @job_name = N'Backup Complete DB2_covid_studies',
+       @schedule_name = N'Backup Daily';
+   GO
+   ```
+
+6. **Add the Job to the Local Server:**
+   Add the job to the SQL Server Agent on the local server.
+
+   ```sql
+   -- Add the job to the SQL Server Agent on the local server
+   EXEC sp_add_jobserver
+       @job_name = N'Backup Complete DB2_covid_studies',
+       @server_name = N'(local)';
+   GO
+   ```
+
+7. **Disable the Job:**
+   Disable the job if necessary.
+
+   ```sql
+   -- Disable the job named 'Backup Complete DB2_covid_studies'
+   EXEC sp_update_job
+       @job_name = N'Backup Complete DB2_covid_studies',
+       @enabled = 0;  -- 0 means disabled
+   GO
+   ```
+
+8. **Enable the Job:**
+   Re-enable the job when needed.
+
+   ```sql
+   -- Enable the job named 'Backup Complete DB2_covid_studies'
+   EXEC sp_update_job
+       @job_name = N'Backup Complete DB2_covid_studies',
+       @enabled = 1;  -- 1 means enabled
+   GO
+   ```
+
+9. **Delete the Existing Job:**
+   Remove the job if it is no longer required.
+
+   ```sql
+   -- Delete the existing job
+   EXEC sp_delete_job
+       @job_name = N'Backup Complete DB2_covid_studies';
+   GO
+   ```
+
+10. **Verify Active Backup Jobs:**
+    Check the status of active backup jobs.
+
+    ```sql
+    -- Verify active Backup jobs
+    SELECT
+        name AS JobName,
+        enabled AS IsEnabled
+    FROM
+        sysjobs
+    WHERE
+        name LIKE '%Backup%' AND
+        enabled = 1;
+    GO
+    ```
+
+
 
