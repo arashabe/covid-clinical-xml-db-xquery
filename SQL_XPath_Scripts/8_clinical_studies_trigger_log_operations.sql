@@ -71,18 +71,18 @@ END;
 GO
 
 -- Test Triggers
--- Insert example
-INSERT INTO ClinicalStudies (StudyXML)
-VALUES ('<study><title>Sample Study</title><description>Example</description></study>');
 
 -- Update example
 UPDATE ClinicalStudies
-SET StudyXML = '<study><title>Updated Study</title><description>Updated Example</description></study>'
-WHERE StudyID = 5784;
+SET StudyXML.modify('
+    replace value of (//completion_date/text())[1]
+    with "August 02, 2022"
+')
+WHERE StudyID = 5783;
 
 -- Delete example
 DELETE FROM ClinicalStudies
-WHERE StudyID = 5784;
+WHERE StudyID = 5783;
 
 -- View the log
 SELECT * FROM ClinicalStudies_Log;
