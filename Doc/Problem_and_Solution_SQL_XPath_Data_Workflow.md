@@ -171,7 +171,7 @@ The `2_create_studies_table_from_xml` file provides an SQL script that performs 
    SELECT TOP 10 * FROM Studies;
    ```
 
-This solution allows the entity to efficiently parse and store crucial clinical study information in a relational format, making it easier to query and analyze the data.
+
 
 ---
 
@@ -249,7 +249,7 @@ The `4_create_conditions_table_from_xml` file provides an SQL script that perfor
    SELECT TOP 10 * FROM Conditions;
    ```
 
-This solution allows the entity to efficiently parse and store crucial condition information from clinical studies in a relational format, making it easier to query and analyze the data.
+
 
 ---
 
@@ -291,7 +291,7 @@ The `5_create_eligibility_table_from_xml` file provides an SQL script that perfo
    SELECT TOP 10 * FROM Eligibility;
    ```
 
-This solution allows the entity to efficiently parse and store crucial eligibility information from clinical studies in a relational format, making it easier to query and analyze the data.
+
 
 ---
 <h2 id="step-6" style="text-align: center;">Step 6: Store Contact Info</h2>
@@ -343,7 +343,7 @@ The `6_create_contacts_table_from_xml` file provides an SQL script that performs
    SELECT TOP 50 * FROM Contacts WHERE phone IS NOT NULL;
    ```
 
-This solution allows the entity to efficiently parse and store crucial contact information from clinical studies in a relational format, making it easier to query and analyze the data.
+
 
 ---
 
@@ -386,7 +386,7 @@ The `7_create_locations_table_from_xml` file provides an SQL script that perform
    SELECT TOP 10 * FROM Locations;
    ```
 
-This solution allows the entity to efficiently parse and store crucial location information from clinical studies in a relational format, making it easier to query and analyze the data.
+
 
 ---
 
@@ -722,7 +722,7 @@ The `10_clinical_studies_data_operations` file provides an SQL script that perfo
    GO
    ```
 
-This solution provides a comprehensive set of queries to verify, extract, filter, and update the XML data stored in the `ClinicalStudies` table, making the data easily accessible and manageable for further analysis and research.
+
 
 ---
 
