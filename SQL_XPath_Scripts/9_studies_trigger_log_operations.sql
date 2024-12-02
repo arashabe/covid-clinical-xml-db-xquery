@@ -81,7 +81,7 @@ GO
 -- Update example
 UPDATE Studies
 SET Status = 'Active'
-WHERE StudyID = 'NCT001';
+WHERE StudyID = 'NCT00571389';
 GO
 -- Delete example
 DELETE FROM Studies
