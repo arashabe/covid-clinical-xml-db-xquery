@@ -424,7 +424,7 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
 
    CREATE TABLE ClinicalStudies_Log (
        LogID INT IDENTITY(1,1) PRIMARY KEY,
-       StudyID INT,
+       AutoIncrementID INT,
        ActionType VARCHAR(10),
        InsertedAt DATETIME DEFAULT GETDATE()
    );
@@ -447,9 +447,9 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
    AFTER INSERT
    AS
    BEGIN
-       INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+       INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
        SELECT 
-           i.StudyID, 'INSERT'
+           i.AUTO_INCREMENT, 'INSERT'
        FROM inserted AS i;
    END;
    GO
@@ -471,9 +471,9 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
    AFTER DELETE
    AS
    BEGIN
-       INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+       INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
        SELECT 
-           d.StudyID, 'DELETE'
+           d.AUTO_INCREMENT, 'DELETE'
        FROM deleted AS d;
    END;
    GO
@@ -495,9 +495,9 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
    AFTER UPDATE
    AS
    BEGIN
-       INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+       INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
        SELECT 
-           u.StudyID, 'UPDATE'
+           u.AUTO_INCREMENT, 'UPDATE'
        FROM inserted AS u;
    END;
    GO
