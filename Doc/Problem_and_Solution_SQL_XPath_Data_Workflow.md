@@ -80,16 +80,21 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
 5. **Create the table for XML data**: The `ClinicalStudies` table is created to store the XML data from the studies.
    ```sql
    CREATE TABLE ClinicalStudies (
-       StudyID INT IDENTITY PRIMARY KEY,
+       AUTO_INCREMENT INT IDENTITY PRIMARY KEY,
        StudyXML XML
    );
    ```
 
 6. **Insert XML file names into a temporary table**: A temporary table is created to store the names of the XML files located in a specific folder.
    ```sql
+   -- Drop the temporary table if it exists 
+   IF OBJECT_ID('tempdb..#TempFiles', 'U') IS NOT NULL DROP TABLE #TempFiles;
    CREATE TABLE #TempFiles (FileName NVARCHAR(4000));
    INSERT INTO #TempFiles (FileName)
    EXEC xp_cmdshell 'dir J:\DB2-project\COVID-19\*.xml /b';
+   -- Remove NULL values
+   DELETE FROM #TempFiles WHERE FileName IS NULL;
+
    ```
 
 7. **Load the XML files into the database**: Using a cursor, the XML files are loaded into the `ClinicalStudies` table.
@@ -754,6 +759,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
 
        -- Create a temporary table to list files
        CREATE TABLE #Files (FileName NVARCHAR(255));
+       CREATE TABLE #NewStudies (StudyID NVARCHAR(50));
 
        -- Use xp_cmdshell to get the list of files in the folder (ensure xp_cmdshell is enabled)
        INSERT INTO #Files (FileName)
@@ -770,42 +776,33 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
        FETCH NEXT FROM FileCursor INTO @CurrentFile;
        WHILE @@FETCH_STATUS = 0
        BEGIN
-           SET @FilePath = @FolderPath + @CurrentFile;
+            SET @FileName = LEFT(@CurrentFile, LEN(@CurrentFile) - 4); -- To get filename we remove '.xml' 
+            SET @FilePath = @FolderPath + @CurrentFile;
+            -- Check if the file name 'StudyID' already exists
+            IF NOT EXISTS (SELECT 1 FROM ClinicalStudies WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') = @FileName)
+            BEGIN
+                -- Insert the XML file into the table if it does not already exist
+                SET @SQL = '
+                    INSERT INTO ClinicalStudies (StudyXML)
+                    SELECT CAST(BULK_ROW AS XML)
+                    FROM OPENROWSET(
+                        BULK ''' + @FilePath + ''',
+                        SINGLE_CLOB
+                    ) AS XMLDATA(BULK_ROW);';
+                EXEC sp_executesql @SQL;
 
-           -- Extract StudyID from the XML file
-           SET @SQL = '
-               SELECT @StudyID_OUT = StudyXML.value(''(//nct_id)[1]'', ''NVARCHAR(50)'')
-               FROM OPENROWSET(
-                   BULK ''' + @FilePath + ''',
-                   SINGLE_CLOB
-               ) AS XMLDATA(StudyXML)';
+                -- Insert the new StudyIDs into the temporary table
+                INSERT INTO #NewStudies (StudyID)
+                VALUES (@FileName);
+            END
+            FETCH NEXT FROM FileCursor INTO @CurrentFile;
+        END;
 
-           DECLARE @StudyID_OUT NVARCHAR(50);
-           EXEC sp_executesql @SQL, N'@StudyID_OUT NVARCHAR(50) OUTPUT', @StudyID_OUT OUTPUT;
+        CLOSE FileCursor;
+        DEALLOCATE FileCursor;
 
-           -- Check if the StudyID already exists
-           IF NOT EXISTS (SELECT 1 FROM ClinicalStudies WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') = @StudyID_OUT)
-           BEGIN
-               -- Insert the XML file into the table if it does not already exist
-               SET @SQL = '
-                   INSERT INTO ClinicalStudies (StudyXML)
-                   SELECT CAST(BULK_COLUMN AS XML)
-                   FROM OPENROWSET(
-                       BULK ''' + @FilePath + ''',
-                       SINGLE_CLOB
-                   ) AS XMLDATA(BULK_COLUMN);
-               ';
-               EXEC sp_executesql @SQL;
-           END
-
-           FETCH NEXT FROM FileCursor INTO @CurrentFile;
-       END;
-
-       CLOSE FileCursor;
-       DEALLOCATE FileCursor;
-
-       -- Clean up the temporary table
-       DROP TABLE #Files;
+        -- Drop the temporary table for files
+        DROP TABLE #Files;
 
        -- Update the derived tables
 
@@ -822,6 +819,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            TRY_CAST(StudyXML.value('(//completion_date)[1]', 'NVARCHAR(50)') AS DATE) AS CompletionDate,
            TRY_CAST(StudyXML.value('(//primary_completion_date)[1]', 'NVARCHAR(50)') AS DATE) AS PrimaryCompletionDate
        FROM ClinicalStudies;
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        INSERT INTO Sponsors (StudyID, Agency, AgencyClass)
        SELECT
@@ -830,6 +828,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            sponsor.value('(agency_class)[1]', 'NVARCHAR(50)') AS AgencyClass
        FROM ClinicalStudies
        CROSS APPLY StudyXML.nodes('//sponsors/lead_sponsor') AS S(sponsor);
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        INSERT INTO Conditions (StudyID, Condition)
        SELECT
@@ -837,6 +836,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            condition.value('.', 'NVARCHAR(255)') AS Condition
        FROM ClinicalStudies
        CROSS APPLY StudyXML.nodes('//condition') AS C(condition);
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        INSERT INTO Eligibility (StudyID, Gender, MinimumAge, MaximumAge, HealthyVolunteers, CriteriaText)
        SELECT
@@ -847,6 +847,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            StudyXML.value('(//eligibility/healthy_volunteers)[1]', 'NVARCHAR(50)') AS HealthyVolunteers,
            StudyXML.value('(//eligibility/criteria/textblock)[1]', 'NVARCHAR(MAX)') AS CriteriaText
        FROM ClinicalStudies;
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        -- Extract contact information, explicitly setting all fields as NVARCHAR
        INSERT INTO Contacts (StudyID, LastName, Phone, Email)
@@ -857,6 +858,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            overall_contact.value('(email)[1]', 'NVARCHAR(255)') AS Email
        FROM ClinicalStudies
        CROSS APPLY StudyXML.nodes('//overall_contact') AS OC(overall_contact);
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        -- Insert contact information from location/contact node with explicit NVARCHAR for PhoneExt
        INSERT INTO Contacts (StudyID, LastName, Phone, Email)
@@ -867,6 +869,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            location_contact.value('(email)[1]', 'NVARCHAR(255)') AS Email
        FROM ClinicalStudies
        CROSS APPLY StudyXML.nodes('//location/contact') AS LC(location_contact);
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
        INSERT INTO Locations (StudyID, FacilityName, City, State, Country, Status)
        SELECT
@@ -878,6 +881,11 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
            location.value('(status)[1]', 'NVARCHAR(50)') AS Status
        FROM ClinicalStudies
        CROSS APPLY StudyXML.nodes('//location') AS L(location);
+       WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
+
+       
+       -- Drop the temporary table for new studies
+       DROP TABLE #NewStudies;
 
    END;
    GO
