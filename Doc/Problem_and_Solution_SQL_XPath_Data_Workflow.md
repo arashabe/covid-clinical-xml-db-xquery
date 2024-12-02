@@ -99,10 +99,14 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
 
 7. **Load the XML files into the database**: Using a cursor, the XML files are loaded into the `ClinicalStudies` table.
    ```sql
+    --The cursor `file_cursor` is declared to select the file names from the temporary table `#TempFiles`.
    DECLARE file_cursor CURSOR FOR 
    SELECT FileName FROM #TempFiles;
 
+    --The cursor `file_cursor` is opened and made ready for use.
    OPEN file_cursor;
+   
+    --The first file name from the result set is fetched and assigned to the variable `@fileName`.
    FETCH NEXT FROM file_cursor INTO @fileName;
 
    WHILE @@FETCH_STATUS = 0
@@ -128,6 +132,7 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
     -- Drop the temporary table
     DROP TABLE #TempFiles;
    ```
+The variable @sql is used to create a dynamic SQL query, constructing the query content on the fly based on the value of the variable @fullPath. The query inserts data into the ClinicalStudies table, specifically into the StudyXML column. The OPENROWSET instruction reads data from a specified file using the BULK parameter, which indicates bulk loading of data from the file. The full path of the file to be loaded, stored in the @fullPath variable, is included in the query. The SINGLE_BLOB parameter indicates that the file should be read as a single large binary object (BLOB). The alias T is assigned to the generated temporary table and BULK_COLUMN to the column containing the file data. Finally, the SELECT CAST(BULK_COLUMN AS XML) instruction converts the data read from the file (BLOB) into XML format and inserts it into the StudyXML column of the ClinicalStudies table.
 
 8. **Verify the data load**: After loading, the total number of records in the `ClinicalStudies` table is verified.
    ```sql
