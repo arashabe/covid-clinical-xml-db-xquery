@@ -136,6 +136,8 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
 
 This solution automates the loading of over 50,000 XML files related to COVID-19 studies into the relational database, making the data easily accessible and usable for further analysis and research.
 
+![Loading xml](/Images/step01.PNG)
+
 ---
 <h2 id="step-2" style="text-align: center;">Step 2: Store Clinical Study Info</h2>
 
@@ -184,7 +186,7 @@ The `2_create_studies_table_from_xml` file provides an SQL script that performs 
    ```
 
 
-
+![Loading xml](/Images/step02.PNG)
 ---
 
 <h2 id="step-3" style="text-align: center;">Step 3: Store Sponsor Info</h2>
@@ -221,7 +223,7 @@ The `3_create_sponsors_table_from_xml` file provides an SQL script that performs
    ```sql
    SELECT TOP 10 * FROM Sponsors;
    ```
-
+![Loading xml](/Images/step03.PNG)
 This solution allows the entity to efficiently parse and store crucial sponsor information from clinical studies in a relational format, making it easier to query and analyze the data.
 
 ---
@@ -261,7 +263,7 @@ The `4_create_conditions_table_from_xml` file provides an SQL script that perfor
    SELECT TOP 10 * FROM Conditions;
    ```
 
-
+![Loading xml](/Images/step04.PNG)
 
 ---
 
@@ -304,7 +306,7 @@ The `5_create_eligibility_table_from_xml` file provides an SQL script that perfo
    ```
 
 
-
+![Loading xml](/Images/step05.PNG)
 ---
 <h2 id="step-6" style="text-align: center;">Step 6: Store Contact Info</h2>
 
@@ -355,7 +357,7 @@ The `6_create_contacts_table_from_xml` file provides an SQL script that performs
    SELECT TOP 50 * FROM Contacts WHERE phone IS NOT NULL;
    ```
 
-
+![Loading xml](/Images/step06.PNG)
 
 ---
 
@@ -398,7 +400,7 @@ The `7_create_locations_table_from_xml` file provides an SQL script that perform
    SELECT TOP 10 * FROM Locations;
    ```
 
-
+![Loading xml](/Images/step07.PNG)
 
 ---
 
@@ -522,6 +524,7 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
     ```sql
     SELECT * FROM ClinicalStudies_Log;
     ```
+![Loading xml](/Images/step08.PNG)
 
 This solution ensures that any insert, update, or delete actions performed on the `ClinicalStudies` table are automatically logged, providing a robust audit trail for the clinical study data.
 
@@ -734,7 +737,7 @@ The `10_clinical_studies_data_operations` file provides an SQL script that perfo
    GO
    ```
 
-
+![Loading xml](/Images/step10.PNG)
 
 ---
 
