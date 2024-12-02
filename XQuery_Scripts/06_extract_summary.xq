@@ -4,3 +4,4 @@ return
 <result>
     <Summary>{ $study/brief_summary/textblock/text() }</Summary>
 </result>
+
