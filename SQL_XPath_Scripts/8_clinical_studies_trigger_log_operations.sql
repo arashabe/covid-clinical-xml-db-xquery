@@ -7,7 +7,7 @@ IF OBJECT_ID('dbo.ClinicalStudies_Log', 'U') IS NOT NULL
 
 CREATE TABLE ClinicalStudies_Log (
     LogID INT IDENTITY(1,1) PRIMARY KEY,
-    StudyID INT,
+    AutoIncrementID INT,
     ActionType VARCHAR(10),
     InsertedAt DATETIME DEFAULT GETDATE()
 );
@@ -25,9 +25,9 @@ ON ClinicalStudies
 AFTER INSERT
 AS
 BEGIN
-    INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+    INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
     SELECT 
-        i.StudyID, 'INSERT'
+        i.AUTO_INCREMENT, 'INSERT'
     FROM inserted AS i;
 END;
 GO
@@ -44,9 +44,9 @@ ON ClinicalStudies
 AFTER DELETE
 AS
 BEGIN
-    INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+    INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
     SELECT 
-        d.StudyID, 'DELETE'
+        d.AUTO_INCREMENT, 'DELETE'
     FROM deleted AS d;
 END;
 GO
@@ -63,9 +63,9 @@ ON ClinicalStudies
 AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO ClinicalStudies_Log (StudyID, ActionType)
+    INSERT INTO ClinicalStudies_Log (AutoIncrementID, ActionType)
     SELECT 
-        u.StudyID, 'UPDATE'
+        u.AUTO_INCREMENT, 'UPDATE'
     FROM inserted AS u;
 END;
 GO
@@ -78,11 +78,11 @@ SET StudyXML.modify('
     replace value of (//completion_date/text())[1]
     with "August 02, 2022"
 ')
-WHERE StudyID = 5783;
+WHERE AUTO_INCREMENT = 5783;
 
 -- Delete example
 DELETE FROM ClinicalStudies
-WHERE StudyID = 5783;
+WHERE AUTO_INCREMENT = 5783;
 
 -- View the log
 SELECT * FROM ClinicalStudies_Log;
