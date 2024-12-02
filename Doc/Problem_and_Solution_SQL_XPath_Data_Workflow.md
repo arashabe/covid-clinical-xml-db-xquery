@@ -120,6 +120,13 @@ The `1_db_creation_and_xml_loading` file provides an SQL script that performs th
        END CATCH;
        FETCH NEXT FROM file_cursor INTO @fileName;
    END
+
+    -- Close and deallocate the cursor
+    CLOSE file_cursor;
+    DEALLOCATE file_cursor;
+
+    -- Drop the temporary table
+    DROP TABLE #TempFiles;
    ```
 
 8. **Verify the data load**: After loading, the total number of records in the `ClinicalStudies` table is verified.
