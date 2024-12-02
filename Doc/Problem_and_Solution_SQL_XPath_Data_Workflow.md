@@ -761,7 +761,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
        CREATE TABLE #Files (FileName NVARCHAR(255));
        CREATE TABLE #NewStudies (StudyID NVARCHAR(50));
 
-       -- Use xp_cmdshell to get the list of files in the folder (ensure xp_cmdshell is enabled)
+       -- Use xp_cmdshell to get the list of files in the folder 
        INSERT INTO #Files (FileName)
        EXEC xp_cmdshell 'dir J:\DB2-project\COVID-19\*.xml /b';
 
@@ -849,7 +849,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
        FROM ClinicalStudies;
        WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
-       -- Extract contact information, explicitly setting all fields as NVARCHAR
+       -- Extract contact information
        INSERT INTO Contacts (StudyID, LastName, Phone, Email)
        SELECT
            StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') AS StudyID,
@@ -860,7 +860,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
        CROSS APPLY StudyXML.nodes('//overall_contact') AS OC(overall_contact);
        WHERE StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') IN (SELECT StudyID FROM #NewStudies);
 
-       -- Insert contact information from location/contact node with explicit NVARCHAR for PhoneExt
+       -- Insert contact information from location/contact node 
        INSERT INTO Contacts (StudyID, LastName, Phone, Email)
        SELECT
            StudyXML.value('(//nct_id)[1]', 'NVARCHAR(50)') AS StudyID,
@@ -901,7 +901,7 @@ The `11_stored_procedure_creation` file provides an SQL script that performs the
    DROP PROCEDURE InsertAndUpdateTables;
    ```
 
-This solution automates the process of inserting and updating clinical study data from multiple XML files into the relational database. By creating and executing a stored procedure, the entity ensures that new XML files are consistently and accurately loaded into the `ClinicalStudies` table and its derived tables, maintaining data integrity and facilitating efficient data management.
+This solution automates the process of inserting and updating clinical study data from multiple XML files into the relational database.
 
 ---
 
