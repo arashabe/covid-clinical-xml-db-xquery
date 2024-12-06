@@ -37,7 +37,7 @@ The XML data is sourced from [Kaggle](https://www.kaggle.com/datasets/parulpande
 This file aims to explain the problems and solutions with a comprehensive description of all the steps related to the scripts present in the **SQL_XPath_Scripts** folder in the repository.
 
 
-Prerequisite: Make sure you have **SQL Server Management Studio (SSMS)** installed to execute the steps outlined in this document.
+Prerequisite: We need **SQL Server Management Studio (SSMS)** installed to execute the steps outlined in this document.
 
 
 ---
