@@ -518,11 +518,11 @@ The `8_clinical_studies_trigger_log_operations` file provides an SQL script that
         replace value of (//completion_date/text())[1]
         with "August 02, 2022"
     ')
-    WHERE StudyID = 5783;
+    WHERE AUTO_INCREMENT = 5783;
 
    -- Delete example
    DELETE FROM ClinicalStudies
-   WHERE StudyID = 5783;
+   WHERE AUTO_INCREMENT = 5783;
    ```
 
 10. **View the log**: The script retrieves the entries from the `ClinicalStudies_Log` table to verify that the triggers are logging the actions correctly.
